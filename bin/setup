@@ -1,0 +1,11 @@
+#!/bin/sh
+if ! command -v runhaskell &>/dev/null; then
+  (
+    printf "You do not have \`runhaskell' present in \$PATH\n"
+    printf "Please install the Haskell Platform and try again.\n"
+  ) >&2
+
+  exit 1
+fi
+
+cat README.md
