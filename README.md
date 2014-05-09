@@ -39,5 +39,5 @@ libraries you're using. Check these out:
 
 ## Working/Submitting
 
-1. To work on this exercise, fork the repo and begin implementing your solution.
-2. Create a pull request so your code can be reviewed.
+Run `git push origin master` and submit your solution on Whetstone once you're
+finished.
