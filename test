@@ -1,0 +1,19 @@
+#!/bin/sh
+example_input() {
+  cat <<EOF
+
+EOF
+}
+
+expected_output() {
+  cat <<EOF
+
+EOF
+}
+
+actual_output = "$(example_input | runhaskell main.hs)"
+
+if [ "$actual_output" != "$expected_output" ]; then
+  # TODO: message
+  exit 1
+fi
