@@ -15,4 +15,6 @@ runhaskell main.hs < input/best-practices.md > output/actual.md
 
 if diff output/{actual,expected}.md; then
   echo "PASSED"
+else
+  ksdiff output/{actual,expected}.md
 fi
