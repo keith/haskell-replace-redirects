@@ -1,11 +1,7 @@
 module Main where
 
-import Data.List
-import Data.Maybe
 import Network.HTTP
 import Network.URI
-import System.Directory
-import System.IO
 import Text.Regex.PCRE
 
 getLocation :: String -> IO (String)
@@ -30,21 +26,27 @@ getLocation url = do
           Just x -> x
 
 pattern :: String
-pattern = "^\\[[^\\]]*\\]:\\s*(http:.*)$"
+pattern = "^(\\[[^\\]]*\\]:\\s*)(http:.*)$"
 
 hasMatch :: String -> Bool
 hasMatch a = a =~ pattern
 
-match' :: String -> String
-match' a = head . tail . head $ (a =~ pattern :: [[String]])
+regexMatches :: String -> [[String]]
+regexMatches a = a =~ pattern :: [[String]]
+
+urlMatch :: String -> String
+urlMatch a = head . tail . tail . head $ regexMatches a
+
+titleMatch :: String -> String
+titleMatch a = head . tail . head $ regexMatches a
 
 processContents :: String -> IO (String)
 processContents x = do
   case hasMatch x of
     False -> return x
     True -> do
-      newURL <- getLocation $ match' x
-      return newURL
+      newURL <- getLocation $ urlMatch x
+      return $ (titleMatch x) ++ newURL
 
 main :: IO ()
 main = do
