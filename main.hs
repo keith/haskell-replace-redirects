@@ -1,5 +1,6 @@
 module Main where
 
+import Data.Maybe
 import Network.HTTP
 import Network.URI
 import Text.Regex.PCRE
@@ -12,10 +13,7 @@ getLocation url = do
     Right r ->
       case rspCode r of
         (2,_,_) -> return url
-        (3,_,_) ->
-          case findHeader HdrLocation r of
-            Nothing -> return url
-            Just redirURL -> return redirURL
+        (3,_,_) -> return $ fromMaybe url $ findHeader HdrLocation r
   where request = Request { rqURI = uri
                           , rqMethod = HEAD
                           , rqHeaders = []
@@ -32,21 +30,21 @@ hasMatch :: String -> Bool
 hasMatch a = a =~ pattern
 
 regexMatches :: String -> [[String]]
-regexMatches a = a =~ pattern :: [[String]]
+regexMatches a = a =~ pattern
 
 urlMatch :: String -> String
-urlMatch a = head . tail . tail . head $ regexMatches a
+urlMatch = head . tail . tail . head . regexMatches
 
 titleMatch :: String -> String
 titleMatch a = head . tail . head $ regexMatches a
 
 processContents :: String -> IO (String)
-processContents x = do
-  case hasMatch x of
-    False -> return x
-    True -> do
+processContents x
+  | match == False = return x
+  | match == True  = do
       newURL <- getLocation $ urlMatch x
       return $ (titleMatch x) ++ newURL
+  where match = hasMatch x
 
 main :: IO ()
 main = do
