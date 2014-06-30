@@ -36,7 +36,7 @@ urlMatch :: String -> String
 urlMatch = head . tail . tail . head . regexMatches
 
 titleMatch :: String -> String
-titleMatch a = head . tail . head $ regexMatches a
+titleMatch = head . tail . head . regexMatches
 
 processContents :: String -> IO (String)
 processContents x
